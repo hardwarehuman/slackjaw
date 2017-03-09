@@ -39,18 +39,24 @@ interleave_day(){
   cat ${fs} | sort > ${outdir}/${ye}-${mo}-${da}.csv
 }
 
+# saving some time to prevent finding in years without data
+minyear="2009"
+minfound=`ls $outdir |cut -d- -f 1 |sort -u |grep "[0-9]\{4\}" |head -1`
+if [ "${minfound} " != " " ]; then
+  minyear="$minfound"
+fi
 interleave_days(){
   lyear=2017
   # No slack archives before its creation in 2009
-  for year in $(seq 2009 $lyear)
+  for year in $(seq ${minyear} $lyear)
   do
     for month in $(seq -w 01 12)
     do
-      for day in $(seq -w 01 31)
+      for day in $(seq -w 01 2 31)
       do
         files=`find $outdir -name "${year}-${month}-${day}:*.csv"`
         if [ "$files " != " " ]; then
-          interleave_day ${year} ${month} ${day} ${files}
+          interleave_day ${year} ${month} ${day} ${files} &
           #cat $files | sort > ${outdir}/${year}-${month}-${day}.csv
         fi
       done
