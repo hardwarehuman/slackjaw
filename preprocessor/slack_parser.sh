@@ -52,7 +52,7 @@ interleave_days(){
   do
     for month in $(seq -w 01 12)
     do
-      for day in $(seq -w 01 2 31)
+      for day in $(seq -w 01 1 31)
       do
         files=`find $outdir -name "${year}-${month}-${day}:*.csv"`
         if [ "$files " != " " ]; then
