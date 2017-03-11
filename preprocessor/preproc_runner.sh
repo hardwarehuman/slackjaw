@@ -78,10 +78,9 @@ then
   then
     echo "ERROR: unable to create a directory for $cust_id"
     exit 7
-  else
-    cust_dir="`pwd`/$cust_id"
   fi
 fi
+cust_dir="`pwd`/$cust_id"
 
 if [ ! -w $cust_id ]
 then
@@ -208,4 +207,3 @@ find_channels(){
 load_if_valid_archive # always do
 set_source_dirs #always do
 run_script_parser #will change w/backend
-
