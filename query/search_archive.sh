@@ -25,7 +25,7 @@ do
   query_array[$query_string_num]=$1
   shift
 done
-parsed="parsed" # MVP preproc output directory
+parsed="parsed" # If this changes, then slack_parser.sh also needs to change
 
 # Account for differences between BSD and GNU date utility
 uname |grep "Darwin\|BSD" > /dev/null
