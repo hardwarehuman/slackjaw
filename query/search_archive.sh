@@ -1,12 +1,16 @@
 #!/bin/bash
 
+# This script provides for Requirement S5 and Requirement S6 and part of
+# Requirement S1
+# Usage is up-to-date
 
 
 scriptname=$0
 usage="Usage:\n$scriptname customer_id date_range search_string[...]\n\
 customer_id, date_range and at least one search_string is required.\n\
-date_range takes the format YYYY-MM-DD:YYYY-MM-DD. Any other format will\n\
-result in searching the entire history(NOTE:not implemented)\n\
+date_range takes the format YYYY-MM-DD:YYYY-MM-DD. Leaving out one side or\n\
+another of the colon will result in searching the maximum date scope for that\n\
+side. For example 2012-02-10: will search from Feb 10 2012 to now.\n\
 After the first search term, subsequent search_string values may be\n\
 led with a minus character to indicate exclusion of the string that follows.\n\
 Example: $scriptname cust-1234 * [Ss]lack -slackjaw\n\
@@ -15,7 +19,7 @@ history, except when the word \"slackjaw\" is also mentioned."
 
 cust_id=$1
 shift
-date_range=$1 #not currently implemented
+date_range=$1
 shift
 query_string_num='0' # the rest of the arguments are search strings
 query_array=()
@@ -125,6 +129,7 @@ outdir="" # For storing query output
 #-----------------------------------------------------------------------------#
 # MVP query ------------------------------------------------------------------#
 #-----------------------------------------------------------------------------#
+# This sets the script's context to match that from the slack_parser
 mvp_parser_setup(){
   outdir="query-`timestamper`"
   if [ ! -d $outdir ]
@@ -140,6 +145,9 @@ mvp_parser_setup(){
     exit 16
   fi
 }
+# matches only post-parse files for the initial grep. Additional serach terms
+# add additional links in a chain of pipes to $search_cmd, which is evaluated at
+# the end
 search_all_terms(){
   search_cmd="grep -h \"${query_array[1]}\" ${parsed}/????-??-??.csv*"
   if [ $query_string_num -gt 1 ]
@@ -155,7 +163,6 @@ search_all_terms(){
       fi
     done
   fi
-  #TODO: add an inline reformatter to package the results for the frontend?
   awk_date_test='{split($1,a,"."); if (a[1] > se && a[1] < ee){print $0}}'
   eval "$search_cmd" \
     | awk -v se=${start_epoch} -v ee=${end_epoch} "${awk_date_test}"\
