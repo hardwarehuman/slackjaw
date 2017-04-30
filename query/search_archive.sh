@@ -27,6 +27,15 @@ do
 done
 parsed="parsed" # MVP preproc output directory
 
+# Account for differences between BSD and GNU date utility
+uname |grep "[Darwin\|BSD]" > /dev/null
+if [ $? -eq 0 ]
+then
+  date_args=" -j -f %H:%M:%S.%Y-%m-%d +%s 00:00:00."
+else
+  date_args=" \"+%s\" -d "
+fi
+
 # check if we can actually have a customer directory by the name. Uses the same
 # error codes as preproc_runner.sh when appropriate. Some of these checks may
 # not be strictly necessary after MVP preproc is replaced, but they should
@@ -70,6 +79,44 @@ then
   exit 16
 fi
 
+# function for echoing to STDERR
+errcho(){ >&2 echo $@; }
+
+# determining start and end epochs
+min_epoch='1230786000' # Beginning of 2009
+max_epoch=`date +%s` # now
+start_date=`echo "$date_range" | cut -d: -f 1 | grep -v [^0-9-]`
+end_date=`echo "$date_range" | cut -d: -f 2 | grep -v [^0-9-]`
+if [ "$start_date " != " " ]
+then
+  start_epoch=`date ${date_args}${start_date}`
+else
+  start_epoch="${min_epoch}"
+fi
+if [ "$end_date " != " " ]
+then
+  end_epoch=`date ${date_args}${end_date}`
+  end_epoch=`expr ${end_epoch} + 86400` # makes end day inclusive
+else
+  end_epoch="${max_epoch}"
+fi
+# checking date validity
+if [ $start_epoch -lt $min_epoch ]
+then
+  errcho "begin date before creation of Slack, setting to 2009-01-01 default"
+  start_epoch=${min_epoch}
+fi
+if [ $end_epoch -gt $max_epoch ]
+then
+  errcho "end date in the future, setting to now"
+  end_epoch=${max_epoch}
+fi
+if [ $start_epoch -gt $end_epoch ]
+then
+  echo "ERROR: end date ${end_date} before start date ${start_date}!"
+  exit 17
+fi
+
 timestamper(){
   echo `date +%Y%m%d%H%M%S`
 }
@@ -94,7 +141,7 @@ mvp_parser_setup(){
   fi
 }
 search_all_terms(){
-  search_cmd="grep \"${query_array[1]}\" ${parsed}/????-??-??.csv*"
+  search_cmd="grep -h \"${query_array[1]}\" ${parsed}/????-??-??.csv*"
   if [ $query_string_num -gt 1 ]
   then
     for i in `seq 2 $query_string_num`
@@ -108,8 +155,11 @@ search_all_terms(){
       fi
     done
   fi
-  #TODO: add an inline reformatter to package the results for the frontend
-  eval "$search_cmd" > $outdir/grepresult
+  #TODO: add an inline reformatter to package the results for the frontend?
+  awk_date_test='{split($1,a,"."); if (a[1] > se && a[1] < ee){print $0}}'
+  eval "$search_cmd" \
+    | awk -v se=${start_epoch} -v ee=${end_epoch} "${awk_date_test}"\
+    > $outdir/grepresult
   echo "$outdir/grepresult" #sending the result location via STDOUT
   exit 0
 }

@@ -79,7 +79,7 @@ do
     do
       dayfile=`basename $dayfile`
       channel_name=`echo $indir | awk '{dirdepth=split($0,a,"/"); print a[dirdepth-1]":"a[dirdepth]}'`
-      echo "" > $outdir/${dayfile%.json}:$channel_name.csv #clear out anything that's there w/o needing to delete
+      printf "" > $outdir/${dayfile%.json}:$channel_name.csv #clear out anything that's there w/o needing to delete
       grep -A 4 "\"type\": \"message\"," $indir/$dayfile |sed "${seds}" | awk -v src_chan=$channel_name '$1=="\"user\":" {split($2,a,"\""); user=a[2]}$1=="\"text\":" {split($0,a,": "); text=a[2]; sub(/,$/,"",text)}$1=="\"ts\":" {split($2,a,"\""); timestamp=a[2]; print timestamp","user","src_chan","text}' >> $outdir/${dayfile%.json}:$channel_name.csv
     done
   else
