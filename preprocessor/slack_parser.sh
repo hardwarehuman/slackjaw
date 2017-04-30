@@ -1,4 +1,10 @@
 #!/bin/bash
+# This whole script is the meat of Requirement A2
+# It expects the slack archives to be completely decompressed and for the
+# arguments to be a list of archive roots. All the archives will be parsed and
+# collated together into $outdir, which is a relative directory set in this
+# script. There is mild coupling between this script and search_archive because
+# of this.
 
 scriptname=$0
 indirs=$@
@@ -13,7 +19,8 @@ timestamper(){
   echo `date +%H%M%S`
 }
 
-outdir="parsed"
+
+outdir="parsed" # If this changes, then search_archive.sh also needs to change
 if [ ! -d $outdir ]
 then
   mkdir $outdir
@@ -57,7 +64,6 @@ interleave_days(){
         files=`find $outdir -name "${year}-${month}-${day}:*.csv"`
         if [ "$files " != " " ]; then
           interleave_day ${year} ${month} ${day} ${files} &
-          #cat $files | sort > ${outdir}/${year}-${month}-${day}.csv
         fi
       done
     done
