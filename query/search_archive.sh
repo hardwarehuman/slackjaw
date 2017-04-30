@@ -28,12 +28,12 @@ done
 parsed="parsed" # MVP preproc output directory
 
 # Account for differences between BSD and GNU date utility
-uname |grep "[Darwin\|BSD]" > /dev/null
+uname |grep "Darwin\|BSD" > /dev/null
 if [ $? -eq 0 ]
 then
   date_args=" -j -f %H:%M:%S.%Y-%m-%d +%s 00:00:00."
 else
-  date_args=" \"+%s\" -d "
+  date_args=" +%s -d "
 fi
 
 # check if we can actually have a customer directory by the name. Uses the same
