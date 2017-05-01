@@ -143,8 +143,8 @@ if (isset($_SESSION["is_logged"])) {
               </br>
 								<input type="radio" name="return" value="debug" checked> Debug<br>
 								<input type="radio" name="return" value="silent"> Silent<br>`-->
-								<label for="UploadFileField">.zip, .tar.bz, .tar.gz</label>
-								<input type="file" name="UploadFileField" id="UploadFileField" accept='application/octet-stream,application/zip,application/x-zip,application/x-zip-compressed,application/x-gzip'/>
+								<label for="UploadFileField">.zip, .tar</label>
+								<input type="file" name="UploadFileField" id="UploadFileField" accept="zip tar.gz tar.bz"/>
 								<input type="submit" name="UploadButton" id="UploadButton" value="Upload" />
 						</form>
 					</div>

@@ -9,7 +9,7 @@ if (isset($_SESSION["is_logged"]) && $_SESSION["is_logged"] == "potato") {
 }
 
 if (isset($_POST["user"]) && isset($_POST["password"])) {
-    //echo "<p>Submitted Form</p>";
+    echo "<p>Submitted Form</p>";
   //login form submitted
   $user = $_POST["user"];
     $pw = $_POST["password"];
@@ -31,22 +31,22 @@ if (isset($_POST["user"]) && isset($_POST["password"])) {
         echo "Debugging error: " . mysqli_connect_error() . PHP_EOL;
         exit;
     }
-    //echo "<p>Starting Query: $query</p>";
+    echo "<p>Starting Query: $query</p>";
     $query = "Select `customerID` , `password` from logins where customerID = '$user'";
     $matches = $conn->query($query);
-    //echo "<p>Completed Query</p>";
+    echo "<p>Completed Query</p>";
     if ($matches->num_rows > 0) {
-        //echo "<p>Building Matches</p>";
+        echo "<p>Building Matches</p>";
         $match = $matches->fetch_assoc();
         $passhash = $match["password"];
         $userid = $match["customerID"];
     } else {
-        //echo "<p>No matches</p>";
+        echo "<p>No matches</p>";
         $error .= "Invalid Username or Password";
     }
-    //echo "<p>Checking Password</p>";
+    echo "<p>Checking Password</p>";
     if ($pw === $passhash) {
-        //echo "<p>Password Verified</p>";
+        echo "<p>Password Verified</p>";
     //we matched so create session vars
     $_SESSION["is_logged"] = "potato";
         $_SESSION["userid"] = $userid;
@@ -54,7 +54,7 @@ if (isset($_POST["user"]) && isset($_POST["password"])) {
     //thank them for logging in  and redirect
     header("Location: http://slackjaw.me");
     } else {
-        //echo "<p>Password Not Matching</p>";
+        echo "<p>Password Not Matching</p>";
         $error = "Invalid Username or Password";
     }
 
@@ -68,8 +68,11 @@ if (isset($_POST["user"]) && isset($_POST["password"])) {
 <html>
 <head>
   <title>Login</title>
+  		<link rel="stylesheet" type="text/css" href="style.css" />
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <style>
     #box{
+	  text-align: center;
       width:400px;
       margin:auto;
       border:black thin solid;
@@ -80,7 +83,16 @@ if (isset($_POST["user"]) && isset($_POST["password"])) {
   </style>
 </head>
 <body>
-
+		<div id="header">
+			<div id="headcontainer">
+				<div id="logo">
+					<A HREF="http://www.slackjaw.me"><img src="slackjaw_me.png" alt="Logo" style="width:auto; height:100%;"></A>
+				</div>
+			</div>
+		</div>
+			<div class="spacer">
+			&nbsp;
+		</div>
   <div id="box">
     <form action="login.php" method="post">
       <h1>Login</h1>
@@ -94,4 +106,4 @@ if (isset($_POST["user"]) && isset($_POST["password"])) {
   </div>
 </body>
 </html>
-<?php //Requirement S3 End
+<?php  //Requirement S3 End?>
