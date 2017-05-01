@@ -17,5 +17,5 @@ Not associated with Slack Technologies
 
 1. Clone this repo: `git clone https://github.com/hardwarehuman/slackjaw.git` to where you want the webapp to run
 2. edit the `DocumentRoot` value to point to the `slackjaw/web` directory
-..* It's generally `"/var/www/html/"` by default
-..* If you git cloned into `/var/www/html`, then the new entry is `DocumentRoot "/var/www/html/slackjaw/web"`
+  * It's generally `"/var/www/html/"` by default
+  * If you git cloned into `/var/www/html`, then the new entry is `DocumentRoot "/var/www/html/slackjaw/web"`
