@@ -89,6 +89,8 @@ then
   exit 8
 fi
 
+# Beginning of Requirement A1
+# Beginning of Requirement A2
 # This section looks at the magic numbers in the archive header to see what
 # type of compression archive it is. Big-endian/little-endian issues are
 # automatically handled by the decompression utility, so we don't care about
@@ -160,6 +162,7 @@ load_customer(){
   fi
 }
 
+# Beginning of Requirement A3
 # finds and cleans all the source dirs. By default, zip uploads will only
 # contain one slack archive, but this function means that they can upload
 # archive files containing multiple slack archives and we can handle them all.
@@ -202,9 +205,11 @@ run_script_parser(){
 find_channels(){
   channel_list="$channel_list `find $1 -type d`"
 }
-
+# Requirement A3 complete
 
 #TODO: check for space handling with alternate formats
 load_if_valid_archive # always do
 set_source_dirs #always do
 run_script_parser #will change w/backend
+# Requirement A1 complete
+# Requirement A2 complete
